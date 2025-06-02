@@ -3,28 +3,24 @@
 apt-get install -y tzdata
 hostnamectl set-hostname hq-srv.au-team.irpo
 timedatectl set-timezone Europe/Samara
-cat <<EOF > /etc/net/ifaces/ens18/options
+cd /etc/net/ifaces
+cd ens18
+vim options
+BOOTPROTO=static
 TYPE=eth
+CONFIG_WIRELESS=no
+SYSTEMD_BOOTPROTO=static
+CONFIG_IPV4=yes
 DISABLED=no
 NM_CONTROLLED=no
-BOOTPROTO=static
-IPV4_CONFIG=yes
-EOF
-
-touch /etc/net/ifaces/ens18/ipv4address
-cat <<EOF > /etc/net/ifaces/ens18/ipv4address
-192.168.25.62/26
-EOF
-
-touch /etc/net/ifaces/ens18/ipv4route
-cat <<EOF > /etc/net/ifaces/ens18/ipv4route
-default via 192.168.25.1
-EOF
-
-cat <<EOF > /etc/resolv.conf
-nameserver 8.8.8.8
-EOF
+SYSTEMD_CONTROLLED=no
+echo "192.168.25.62" > /etc/net/ifaces/ens18/ipv4address
+echo "default via 192.168.25.1" > /etc/net/ifaces/ens18/ipv4route
+echo nameserver 8.8.8.8 > /etc/resolv.conf
 systemctl restart network
+ip -c -br a
+ip route show
+ip a show
 
 #Создание пользователя sshuser и настройка sshd конфига
 useradd sshuser -u 1010
