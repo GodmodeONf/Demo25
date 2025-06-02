@@ -1,0 +1,15 @@
+# Настройка SSH на всех машинах
+vim /etc/openssh/sshd_config
+# Добавляем следующие строки:
+Port 2024
+MaxAuthTries 2
+PubkeyAuthentication yes
+PasswordAuthentication yes
+Banner /etc/openssh/bannermotd
+AllowUsers  sshuser
+# После создаем файл баннера
+vim /etc/openssh/bannermotd
+----------------------
+AUTHORIZED ACCESS ONLY
+----------------------
+systemctl restart sshd

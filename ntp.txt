@@ -1,0 +1,20 @@
+# На br-srv:
+apt-get install -y chrony
+# Приводим начало файла /etc/chrony.conf к следующему виду:
+server 127.0.0.1 iburst prefer
+hwtimestamp *
+local stratum 5
+allow 0/0
+systemctl enable --now chronyd
+chronyc sources
+chronyc tracking | grep Stratum
+chronyc clients (в конце)
+# На BR-RTR и HQ-RTR:
+ntp server 192.168.22.30
+ntp timezone utc+4
+sh ntp status
+# На CLI, SRV:
+apt-get install chrony
+vim /etc/chrony.conf
+server 192.168.22.30
+systemctl enable --now chronyd
