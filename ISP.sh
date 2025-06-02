@@ -1,6 +1,6 @@
-#!/bin/bash
-
-hostnamectl set-hostname ISP;
+apt-get install -y tzdata
+hostnamectl set-hostname isp; exec bash
+timedatectl set-timezone Europe/Samara
 
 mkdir /etc/net/ifaces/ens19
 mkdir /etc/net/ifaces/ens20
@@ -33,12 +33,8 @@ cat <<EOF > /etc/net/ifaces/ens20/ipv4address
 EOF
 
 sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/net/sysctl.conf
-
-apt-get update && apt-get install -y firewalld
-
-apt-get update && apt-get install tzdata  
-timedatectl set-timezone Europe/Samara
-
+на этом завершается 1 модуль
+apt-get update && apt-get install -y firewalld 
 systemctl enable --now firewalld
 firewall-cmd --permanent --zone=public --add-interface=ens18
 firewall-cmd --permanent --zone=trusted --add-interface=ens19
@@ -74,3 +70,4 @@ systemctl restart sshd
 
 
 hostnamectl set-hostname ISP; exec bash
+
