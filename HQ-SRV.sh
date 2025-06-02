@@ -1,6 +1,8 @@
-#!/bin/bash
 
+
+apt-get install -y tzdata
 hostnamectl set-hostname hq-srv.au-team.irpo
+timedatectl set-timezone Europe/Samara
 cat <<EOF > /etc/net/ifaces/ens18/options
 TYPE=eth
 DISABLED=no
@@ -11,12 +13,12 @@ EOF
 
 touch /etc/net/ifaces/ens18/ipv4address
 cat <<EOF > /etc/net/ifaces/ens18/ipv4address
-192.168.1.62/26
+192.168.25.62/26
 EOF
 
 touch /etc/net/ifaces/ens18/ipv4route
 cat <<EOF > /etc/net/ifaces/ens18/ipv4route
-default via 192.168.1.1
+default via 192.168.25.1
 EOF
 
 cat <<EOF > /etc/resolv.conf
@@ -28,9 +30,6 @@ systemctl restart network
 useradd sshuser -u 1010
 echo "sshuser:P@ssw0rd" | chpasswd
 usermod -aG wheel sshuser
-
-apt-get update && apt-get install tzdata  
-timedatectl set-timezone Europe/Samara
 
 touch /etc/sudoers
 cat <<EOF /etc/sudoers
@@ -109,7 +108,7 @@ cat > /etc/dnsmasq.conf <<EOF
 no-resolv
 no-poll
 no-hosts
-listen-address=192.168.1.62
+listen-address=192.168.25.62
 
 server=77.88.8.8
 server=8.8.8.8
@@ -118,19 +117,18 @@ cache-size=1000
 all-servers
 no-negcache
 
-host-record=hq-rtr.au-team.irpo,192.168.1.1
-host-record=hq-srv.au-team.irpo,192.168.1.62
-host-record=hq-cli.au-team.irpo,192.168.1.66
+host-record=hq-rtr.au-team.irpo,192.168.25.1
+host-record=hq-srv.au-team.irpo,192.168.25.62
+host-record=hq-cli.au-team.irpo,192.168.25.66
 
-address=/br-rtr.au-team.irpo/192.168.0.1
-address=/br-srv.au-team.irpo/192.168.0.30
+address=/br-rtr.au-team.irpo/192.168.24.1
+address=/br-srv.au-team.irpo/192.168.24.30
 
-cname=moodle.au-team.irpo,hq-rtr.au-team.irpo
-cname=wiki.au-team.irpo,hq-rtr.au-team.irpo
+cname=moodle.au-team.irpo,isp.au-team.irpo
+cname=wiki.au-team.irpo,isp.au-team.irpo
 EOF
 systemctl restart dnsmasq
 
 grep -E "Port|MaxAuthTries|PasswordAuthentication|PubkeyAuthentication" "$CONFIG_FILE"
 cat /etc/dnsmasq.conf
 timedatectl
-
